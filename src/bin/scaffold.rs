@@ -73,7 +73,7 @@ fn get_puzzle_input(day: u8) -> Result<String, Box<dyn std::error::Error>> {
         .get(format!("https://adventofcode.com/2022/day/{day}/input"))
         .header(COOKIE, format!("session={session_cookie}"))
         .send()?;
-    Ok(res.text()?)
+    Ok(res.text()?.trim_end().to_string())
 }
 
 /// Tries to get the puzzle description and parse it to markdown.
