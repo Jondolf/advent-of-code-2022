@@ -193,7 +193,7 @@ fn main() {
     let exe_path = std::env::current_exe().unwrap();
     let project_dir_idx = exe_path
         .iter()
-        .position(|str| str.to_str().unwrap() == "advent_of_code_2022")
+        .position(|str| str.to_str().unwrap() == "advent-of-code-2022")
         .unwrap();
     let project_path =
         exe_path.to_str().unwrap().split('/').collect::<Vec<&str>>()[0..=project_dir_idx].join("/");
