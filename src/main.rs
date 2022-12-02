@@ -1,4 +1,5 @@
 mod days;
+mod utils;
 
 use days::*;
 use std::{fs, time::Instant};
