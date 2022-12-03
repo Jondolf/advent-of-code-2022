@@ -21,6 +21,7 @@ fn get_day_solver(day: u8) -> Option<(PuzzleSolver, PuzzleSolver)> {
     match day {
         1 => Some((day01::part_one, day01::part_two)),
         2 => Some((day02::part_one, day02::part_two)),
+        3 => Some((day03::part_one, day03::part_two)),
         _ => None,
     }
 }
