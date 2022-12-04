@@ -18,16 +18,16 @@ pub fn part_two(input: &str) -> Option<u32> {
 mod tests {
     use super::*;
 
+    const EXAMPLE_INPUT: &str = r#""#;
+
     #[test]
     fn test_part_one() {
-        let input = r#""#;
-        assert_eq!(part_one(input), None);
+        assert_eq!(part_one(EXAMPLE_INPUT), None);
     }
 
     #[test]
     fn test_part_two() {
-        let input = r#""#;
-        assert_eq!(part_two(input), None);
+        assert_eq!(part_two(EXAMPLE_INPUT), None);
     }
 }
 "##;
