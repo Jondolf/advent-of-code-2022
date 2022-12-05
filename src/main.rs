@@ -2,7 +2,11 @@ mod days;
 mod utils;
 
 use days::*;
-use std::{fs, time::Instant};
+use std::{
+    fmt::Display,
+    fs,
+    time::{Duration, Instant},
+};
 
 use clap::Parser;
 use colored::Colorize;
@@ -15,55 +19,77 @@ struct Args {
     day: Option<u8>,
 }
 
-type PuzzleSolver = fn(&str) -> Option<u32>;
+struct DayResult {
+    part_one_solution: String,
+    part_two_solution: String,
+    part_one_duration: Duration,
+    part_two_duration: Duration,
+}
 
-fn get_day_solver(day: u8) -> Option<(PuzzleSolver, PuzzleSolver)> {
-    match day {
-        1 => Some((day01::part_one, day01::part_two)),
-        2 => Some((day02::part_one, day02::part_two)),
-        3 => Some((day03::part_one, day03::part_two)),
-        4 => Some((day04::part_one, day04::part_two)),
-        _ => None,
+type PuzzleSolver<T> = fn(&str) -> Option<T>;
+
+impl DayResult {
+    fn from_solvers<T: Display>(
+        input: &str,
+        part_one: PuzzleSolver<T>,
+        part_two: PuzzleSolver<T>,
+    ) -> Self {
+        let time_one = Instant::now();
+        let part_one_solution = part_one(input).map_or("-".to_string(), |val| val.to_string());
+        let part_one_duration = time_one.elapsed();
+
+        let time_two = Instant::now();
+        let part_two_solution = part_two(input).map_or("-".to_string(), |val| val.to_string());
+        let part_two_duration = time_two.elapsed();
+
+        Self {
+            part_one_solution,
+            part_two_solution,
+            part_one_duration,
+            part_two_duration,
+        }
     }
 }
 
-fn run_day(day: u8) {
-    if let Some((part_one, part_two)) = get_day_solver(day) {
-        println!("{}", format!("Day {day}").bold().bright_blue());
-
-        if let Ok(input) = fs::read_to_string(format!("src/days/day{:02}/input.txt", day)) {
-            let time_1 = Instant::now();
-            let part_1_solution = part_one(&input);
-            let part_1_elapsed_ms = time_1.elapsed().as_nanos() as f64 / 1_000_000.0;
-
-            let time_2 = Instant::now();
-            let part_2_solution = part_two(&input);
-            let part_2_elapsed_ms = time_2.elapsed().as_nanos() as f64 / 1_000_000.0;
-
-            let formatted_1_solution =
-                part_1_solution.map_or("-".yellow(), |s| s.to_string().yellow());
-            let formatted_2_solution =
-                part_2_solution.map_or("-".yellow(), |s| s.to_string().yellow());
-
-            let formatted_1_time = format!("({part_1_elapsed_ms} ms)").dimmed();
-            let formatted_2_time = format!("({part_2_elapsed_ms} ms)").dimmed();
-
-            println!("Part 1: {formatted_1_solution} {formatted_1_time}");
-            println!("Part 2: {formatted_2_solution} {formatted_2_time}\n");
-        } else {
-            println!("Couldn't find input for day {day}.\n");
-        }
+fn get_day_result(input: &str, day: u8) -> DayResult {
+    match day {
+        1 => DayResult::from_solvers(input, day01::part_one, day01::part_two),
+        2 => DayResult::from_solvers(input, day02::part_one, day02::part_two),
+        3 => DayResult::from_solvers(input, day03::part_one, day03::part_two),
+        4 => DayResult::from_solvers(input, day04::part_one, day04::part_two),
+        _ => panic!("Couldn't run day {day}. "),
     }
+}
+
+fn run_day(day: u8) -> std::io::Result<String> {
+    let input = fs::read_to_string(format!("src/days/day{:02}/input.txt", day))?;
+    let res = get_day_result(&input, day);
+
+    println!("{}", format!("Day {day}").bold().bright_blue());
+
+    let formatted_one_solution = res.part_one_solution.yellow();
+    let formatted_two_solution = res.part_two_solution.yellow();
+
+    let part_one_dur = res.part_one_duration.as_micros() as f32 / 1000.0;
+    let part_two_dur = res.part_two_duration.as_micros() as f32 / 1000.0;
+
+    let formatted_one_time = format!("({part_one_dur} ms)").dimmed();
+    let formatted_two_time = format!("({part_two_dur} ms)").dimmed();
+
+    println!("Part 1: {formatted_one_solution} {formatted_one_time}");
+    println!("Part 2: {formatted_two_solution} {formatted_two_time}\n");
+
+    Ok(format!("Ran day {day}"))
 }
 
 fn main() {
     println!("\n{}\n", "✨ Advent of Code 2022 ✨".bold().yellow());
     if let Some(day) = Args::parse().day {
-        run_day(day);
+        run_day(day).expect("Couldn't find input");
     } else {
         println!("Running all solved puzzles.\n");
         for day in 0..=25 {
-            run_day(day);
+            let _ = run_day(day);
         }
     }
 }

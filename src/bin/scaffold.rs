@@ -229,7 +229,7 @@ fn main() {
     if let Some(i) = target_line_idx {
         insert_below_line(
             &format!(
-                "        {} => Some((day{:02}::part_one, day{:02}::part_two)),",
+                "        {} => DayResult::from_solvers(input, day{:02}::part_one, day{:02}::part_two),",
                 args.day, args.day, args.day
             ),
             i,
