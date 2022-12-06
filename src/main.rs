@@ -35,16 +35,16 @@ impl DayResult {
         part_two: PuzzleSolver<T>,
     ) -> Self {
         let time_one = Instant::now();
-        let part_one_solution = part_one(input).map_or("-".to_string(), |val| val.to_string());
+        let part_one_solution = part_one(input);
         let part_one_duration = time_one.elapsed();
 
         let time_two = Instant::now();
-        let part_two_solution = part_two(input).map_or("-".to_string(), |val| val.to_string());
+        let part_two_solution = part_two(input);
         let part_two_duration = time_two.elapsed();
 
         Self {
-            part_one_solution,
-            part_two_solution,
+            part_one_solution: part_one_solution.map_or("-".to_string(), |val| val.to_string()),
+            part_two_solution: part_two_solution.map_or("-".to_string(), |val| val.to_string()),
             part_one_duration,
             part_two_duration,
         }
