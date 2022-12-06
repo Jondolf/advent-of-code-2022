@@ -58,6 +58,7 @@ fn get_day_result(input: &str, day: u8) -> DayResult {
         3 => DayResult::from_solvers(input, day03::part_one, day03::part_two),
         4 => DayResult::from_solvers(input, day04::part_one, day04::part_two),
         5 => DayResult::from_solvers(input, day05::part_one, day05::part_two),
+        6 => DayResult::from_solvers(input, day06::part_one, day06::part_two),
         _ => panic!("Couldn't run day {day}. "),
     }
 }
